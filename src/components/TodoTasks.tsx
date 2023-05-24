@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input, Checkbox, Popover, ActionIcon, Select, Button, LoadingOverlay } from '@mantine/core';
 import { IconDots } from '@tabler/icons-react';
 import { useGetTodos, useAddTodo, useDeleteTodo, useUpdateTodo } from '@queries/TodoTasks';
+import ProgressBar from '@components/ProgressBar'
 
 interface Todo {
   id: string;
@@ -14,6 +15,8 @@ const TodoLists = () => {
   const [filterType, setFilterType] = useState<string | null>('?');
   const [inputText, setInputText] = useState('');
   const [editingItem, setEditingItem] = useState<Todo| undefined>(undefined);
+  const [ percentage, setPercentage ] = useState(0);
+
   const { data: todos, isLoading: fetchTodoLoading } = useGetTodos(filterType);
   const { mutate: addTodoMutate } = useAddTodo();
   const { mutate: deleteTodoMutate } = useDeleteTodo();
@@ -48,10 +51,25 @@ const TodoLists = () => {
     updateTodoMutate(editingItem)
     setEditingItem(undefined)
   }
+  
+  let doneTasks = todos?.filter(item => item.completed).length ?? 0
+  let total = todos?.length ?? 0
+
+  useEffect(() => {
+    setPercentage((doneTasks / total) * 100)
+    return () => {
+      setPercentage(0)
+    }
+  }, [doneTasks])
 
   return (
     <>
-      <LoadingOverlay visible={fetchTodoLoading} overlayBlur={2} />
+
+      <div className="progress-card">
+        <h2 className="progress-title">Progress</h2>
+        <ProgressBar percentage={percentage} doneTasks={doneTasks} />
+      </div>
+
       <div className="d-flex j-content-between align-items-center">
         <h3>Tasks</h3>
         <Select
@@ -69,59 +87,65 @@ const TodoLists = () => {
         />
       </div>
 
-      <ul className="list-group">
-        {todos && todos.map((todo) => (
-          <li
-            className="list-item"
-            key={todo.id}
-            style={{ textDecoration: (todo.completed && editingItem?.id !== todo.id) ? 'line-through' : 'none' }}
-          >
-            {
-              editingItem?.id === todo.id ?
+      <div className="relative">
+
+        <LoadingOverlay visible={fetchTodoLoading} overlayBlur={2} />
+        
+        <ul className="list-group">
+          {todos && todos.map((todo) => (
+            <li
+              className="list-item"
+              key={todo.id}
+              style={{ textDecoration: (todo.completed && editingItem?.id !== todo.id) ? 'line-through' : 'none' }}
+            >
+              {
+                editingItem?.id === todo.id ?
+                  <>
+                    <Input
+                      variant="unstyled"
+                      value={editingItem.title}
+                      onChange={(e: any) => setEditingItem({...editingItem, ...{ title: e.target.value }})}
+                      className="flex-1"
+                    />
+                    <Button color="violet" radius="lg" onClick={updateTodo}>
+                      Save
+                    </Button>
+                  </>
+                : 
                 <>
-                  <Input
-                    variant="unstyled"
-                    value={editingItem.title}
-                    onChange={(e: any) => setEditingItem({...editingItem, ...{ title: e.target.value }})}
-                    className="flex-1"
+                  <Checkbox
+                    label={todo.title}
+                    checked={todo.completed}
+                    onChange={() => toggleTodo(todo.id)}
+                    color="violet"
                   />
-                  <Button color="violet" radius="lg" onClick={updateTodo}>
-                    Save
-                  </Button>
+                  <Popover 
+                    width={100} 
+                    position="bottom" 
+                    withArrow 
+                    arrowPosition="side" 
+                    shadow="md"
+                    radius="md">
+                    <Popover.Target>
+                      <ActionIcon>
+                        <IconDots size="2rem" />
+                      </ActionIcon>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <ul className="action-btn-group">
+                        <li onClick={() => setEdit(todo)}>Edit</li>
+                        <li className="text-danger" onClick={() => deleteTodo(todo.id)}>Delete</li>
+                      </ul>
+                    </Popover.Dropdown>
+                  </Popover>
                 </>
-              : 
-              <>
-                <Checkbox
-                  label={todo.title}
-                  checked={todo.completed}
-                  onChange={() => toggleTodo(todo.id)}
-                  color="violet"
-                />
-                <Popover 
-                  width={100} 
-                  position="bottom" 
-                  withArrow 
-                  arrowPosition="side" 
-                  shadow="md"
-                  radius="md">
-                  <Popover.Target>
-                    <ActionIcon>
-                      <IconDots size="2rem" />
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <ul className="action-btn-group">
-                      <li onClick={() => setEdit(todo)}>Edit</li>
-                      <li className="text-danger" onClick={() => deleteTodo(todo.id)}>Delete</li>
-                    </ul>
-                  </Popover.Dropdown>
-                </Popover>
-              </>
-            }
-            
-          </li>
-        ))}
-      </ul>
+              }
+              
+            </li>
+          ))}
+        </ul>
+      </div>
+      
 
       <Input
         className="flex-1 flex-gap"
