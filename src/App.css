@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap');
+
+body, html {
+    font-family: 'Roboto', sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: block;
+  background-color: #E5E5E5;
+}
+.root-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.todo-app {
+  width: 500px;
+  min-height: 400px;
+  overflow: auto;
+  padding: 3rem 4rem;
+  background-color: #F5F5F5;
+  /* text-align: center; */
+  border-radius: 20px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .root-container {
+    height: 100%;
+  }
+
+  .todo-app {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+.progress-card {
+  text-align: left;
+  /* width: 100%; */
+  background-color: #E07C7C;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.progress-title {
+  color: #fff;
+  margin-top: 0;
+}
+
+.progress-status {
+  color: #EBB9B8;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.list-group {
+  padding: 0;
+}
+
+.list-item {
+  padding: 8px 20px;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  list-style: none;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-item label {
+  cursor: pointer;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.j-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.flex-1 {
+  flex-grow: 1;
+}
+
+.flex-gap {
+  gap: 10px;
+}
+
+.add-task {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn-group {
+  padding: 0;
+  list-style: none;
+}
+
+.action-btn-group li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.action-btn-group li:hover {
+  background-color: #F5F5F5;
+  border-radius: 4px;
+}
+
+.text-danger {
+  color: #E07C7C;
+}
