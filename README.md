@@ -13,7 +13,7 @@ To Start Server:
 ```
 To Visit App:
 ```bash
-  localhost:3000
+  http://127.0.0.1:5173/
 ```
 
 Structure
@@ -28,7 +28,6 @@ App
     ├── config        
     │   ├── query key           (react query key)
     ├── hooks                   (custom hooks)
-    ├── layouts                 (layout components)
     ├── services 
     │   ├── api service
     └── utils
